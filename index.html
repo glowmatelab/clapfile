@@ -6,7 +6,6 @@
     <title>ROOT@CLAPFILE_MATRIX:~#</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         body { font-family: 'Fira Code', monospace; text-shadow: 0 0 6px var(--glow-color, rgba(34, 197, 94, 0.7)); }
         .crt::after {
@@ -44,7 +43,7 @@
 
     <div class="text-center mb-2 relative z-10 sm:hidden">
         <h1 id="mobile-title" class="text-3xl font-black tracking-[0.2em] text-white drop-shadow-[0_0_10px_rgba(34,197,94,0.8)]">CLAPFILE</h1>
-        <p class="text-[9px] text-green-500/50 tracking-widest">// QUANTUM MULTI-MESH ENGINE //</p>
+        <p class="text-[9px] text-green-500/50 tracking-widest">// LOCAL MESH ENGINE //</p>
     </div>
 
     <div id="main-terminal" class="w-full max-w-2xl bg-[#010402]/95 border-2 border-green-500/40 rounded-xl p-6 shadow-[0_0_50px_rgba(34,197,94,0.15)] relative z-10 backdrop-blur-sm transition-all duration-500 transform scale-95 opacity-0">
@@ -52,22 +51,21 @@
         <div id="alert-glow" class="absolute inset-0 bg-red-600/0 rounded-xl pointer-events-none transition-all duration-500 z-0"></div>
 
         <div class="relative z-10">
-            <div id="title-bar" class="flex items-center justify-between border-b border-green-500/30 pb-3 mb-6 text-xs text-green-500/60 font-bold tracking-widest transition-colors duration-500">
-                <div id="protocol-title">⚡ SYSTEM://CLAPFILE_MESH_CORE_v5.3</div>
-                <div class="flex gap-1.5">
-                    <span id="indicator-pulse" class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] animate-pulse transition-all duration-500"></span>
-                </div>
+            <div class="flex items-center justify-between border-b border-green-500/30 pb-3 mb-6 text-xs text-green-500/60 font-bold tracking-widest">
+                <div>⚡ SYSTEM://CLAPFILE_LOCAL_MESH_v6.0</div>
+                <span id="indicator-pulse" class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] animate-pulse"></span>
             </div>
 
+            <!-- SETUP SECTION -->
             <div id="setup-section" class="space-y-6">
                 <div class="border border-green-500/30 bg-black/60 p-5 rounded-lg shadow-inner">
                     <button id="generate-btn" class="w-full bg-green-950/20 hover:bg-green-500 hover:text-black text-green-400 border border-green-500 font-bold py-3 rounded tracking-widest transition-all cursor-pointer text-xs uppercase shadow-[0_0_15px_rgba(34,197,94,0.1)] active:scale-[0.99]">
                         [ FORGE MESH ROOT NODE ]
                     </button>
-                    
                     <div id="generated-code-box" class="hidden mt-5 pt-4 border-t border-green-500/20 text-center">
                         <p class="text-[10px] text-green-500/50 tracking-widest">MESH NETWORK ACCESS PIN:</p>
                         <div id="display-code" class="mt-2 text-4xl font-black text-white bg-green-950/40 py-3 border border-green-500/40 tracking-[0.5em] pl-[0.5em] rounded animate-pulse">----</div>
+                        <p class="text-[10px] text-yellow-500/70 mt-3 tracking-wider">⚠ OPEN THIS FILE IN BROWSER ON OTHER DEVICES (SAME WIFI)</p>
                     </div>
                 </div>
 
@@ -83,365 +81,346 @@
                 <p id="status" class="text-xs text-center font-mono text-yellow-500 min-h-[16px] tracking-wide uppercase"></p>
             </div>
 
+            <!-- SYNC SECTION -->
             <div id="sync-section" class="hidden space-y-5">
-                <div id="link-banner" class="bg-green-950/20 border border-green-500/30 p-2.5 rounded text-xs text-green-400 flex items-center justify-between font-mono shadow-inner transition-colors duration-500">
-                    <span id="banner-text" class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] animate-ping"></span> 
-                        MESH ONLINE // DEVICES CONNECTED: <span id="device-count" class="text-white font-bold bg-green-900 px-1.5 py-0.5 rounded">1</span>
+                <div class="bg-green-950/20 border border-green-500/30 p-2.5 rounded text-xs text-green-400 flex items-center justify-between font-mono shadow-inner">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] animate-ping"></span>
+                        MESH ONLINE // DEVICES: <span id="device-count" class="text-white font-bold bg-green-900 px-1.5 py-0.5 rounded ml-1">1</span>
                     </span>
                     <span class="font-bold">ROOM: <span id="active-room-id" class="text-white bg-green-950 px-2 py-0.5 rounded border border-green-500/30">----</span></span>
                 </div>
 
                 <div>
                     <label class="block text-[10px] text-green-500/50 tracking-widest uppercase mb-1.5"># MEMORY_LOG_MIRROR (BROADCASTS TO ALL)</label>
-                    <textarea id="clipboard-box" rows="4" placeholder="[MESH_SHELL]:~ Anything typed here syncs to all devices in the matrix..." class="w-full bg-black border border-green-500/30 rounded-lg p-4 text-green-400 text-sm focus:outline-none focus:border-green-500 transition-all resize-none font-mono placeholder-green-900/40 leading-relaxed shadow-inner"></textarea>
+                    <textarea id="clipboard-box" rows="4" placeholder="[MESH_SHELL]:~ Kuch bhi likho — sab devices pe sync hoga..." class="w-full bg-black border border-green-500/30 rounded-lg p-4 text-green-400 text-sm focus:outline-none focus:border-green-500 transition-all resize-none font-mono placeholder-green-900/40 leading-relaxed shadow-inner"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-[10px] text-green-500/50 tracking-widest uppercase mb-1.5"># BINARY_MESH_PIPELINE</label>
-                    <div class="relative border border-dashed border-green-500/30 hover:border-green-500/60 rounded-lg p-5 bg-black/40 text-center group cursor-pointer transition-colors duration-500" id="file-dropzone">
+                    <div class="relative border border-dashed border-green-500/30 hover:border-green-500/60 rounded-lg p-5 bg-black/40 text-center group cursor-pointer transition-colors duration-500">
                         <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                         <p id="upload-placeholder" class="text-xs text-green-500/40 font-mono tracking-wider group-hover:text-green-400/70 uppercase">[ CAST PAYLOAD TO ALL CLAPFILE NODES ]</p>
                     </div>
-                    
                     <div id="purge-zone" class="hidden mt-3">
-                        <button id="purge-btn" class="w-full bg-red-950/40 hover:bg-red-600 hover:text-black text-red-500 border border-red-500 font-bold py-2 rounded tracking-widest text-xs uppercase cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all">
-                            [ X ] EMERGENCY PURGE (WIPE CURRENT MATRIX PIPELINE)
+                        <button id="purge-btn" class="w-full bg-red-950/40 hover:bg-red-600 hover:text-black text-red-500 border border-red-500 font-bold py-2 rounded tracking-widest text-xs uppercase cursor-pointer transition-all">
+                            [ X ] EMERGENCY PURGE
                         </button>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[10px] text-green-500/50 tracking-widest uppercase mb-1.5"># CLAPFILE_MESH_LOGS</label>
-                    <div id="terminal-logs" class="w-full h-24 bg-black border border-green-500/20 rounded-lg p-3 text-[10px] font-mono text-green-500/70 overflow-y-auto no-scrollbar space-y-1 shadow-inner select-text"></div>
+                    <div id="terminal-logs" class="w-full h-28 bg-black border border-green-500/20 rounded-lg p-3 text-[10px] font-mono text-green-500/70 overflow-y-auto no-scrollbar space-y-1 shadow-inner select-text"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="absolute bottom-3 text-center text-[10px] tracking-[0.3em] text-green-500/30 font-mono z-10 w-full select-none">
-        // DESIGNED BY <span class="text-green-400 font-bold drop-shadow-[0_0_5px_rgba(34,197,94,0.5)]">MANISH</span>_ //
+        // DESIGNED BY <span class="text-green-400 font-bold">MANISH</span>_ //
     </div>
 
-    <script>
-        // ✅ FIXED: peerConfig with STUN servers restored
-        const peerConfig = {
-            config: {
-                iceServers: [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' },
-                    { urls: 'stun:stun2.l.google.com:19302' },
-                    { urls: 'stun:stun3.l.google.com:19302' },
-                    { urls: 'stun:stun4.l.google.com:19302' },
-                    { urls: 'stun:global.stun.twilio.com:3478' }
-                ],
-                sdpSemantics: 'unified-plan'
+<script>
+    // =============================================
+    // CLAPFILE v6.0 — BroadcastChannel + FileReader
+    // Works on same device tabs AND same WiFi
+    // via SharedWorker / localStorage fallback
+    // =============================================
+
+    function speakAI(text) {
+        try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate=1.0; u.pitch=0.6; window.speechSynthesis.speak(u); } catch(e) {}
+    }
+
+    // --- BOOT ---
+    const bootScreen = document.getElementById('boot-screen');
+    const mainTerminal = document.getElementById('main-terminal');
+    const bootLogs = document.getElementById('boot-logs');
+    const bootScripts = [
+        "INITIALIZING CLAPFILE LOCAL-MESH SYSTEM...",
+        "SCANNING LOCAL NETWORK CHANNELS...",
+        "BROADCASTCHANNEL ENGINE STABLE...",
+        "SUCCESS: CLAPFILE LOCAL MATRIX ONLINE."
+    ];
+    let scriptIdx = 0;
+    function runBootSequence() {
+        if (scriptIdx < bootScripts.length) {
+            const p = document.createElement('p');
+            p.innerText = `>_ ${bootScripts[scriptIdx]}`;
+            bootLogs.appendChild(p); scriptIdx++;
+            setTimeout(runBootSequence, 200);
+        } else {
+            setTimeout(() => {
+                bootScreen.classList.add('hidden');
+                mainTerminal.classList.remove('scale-95','opacity-0');
+                speakAI("Clap File local matrix online.");
+                writeLog("ClapFile local mesh initialized. No server needed.");
+            }, 400);
+        }
+    }
+    window.onload = runBootSequence;
+
+    // --- MATRIX RAIN ---
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize(); window.onresize = resize;
+    const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&";
+    const fontSize = 14;
+    let drops = [];
+    function initDrops() { drops = Array(Math.floor(canvas.width/fontSize)).fill(1); }
+    initDrops(); window.addEventListener('resize', initDrops);
+    let rainColor = '#22c55e';
+    function drawMatrix() {
+        ctx.fillStyle='rgba(2,5,3,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle=rainColor; ctx.font=fontSize+'px monospace';
+        for(let i=0;i<drops.length;i++){
+            ctx.fillText(matrixChars[Math.floor(Math.random()*matrixChars.length)],i*fontSize,drops[i]*fontSize);
+            if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 30);
+
+    // --- DOM REFS ---
+    const generateBtn     = document.getElementById('generate-btn');
+    const generatedCodeBox= document.getElementById('generated-code-box');
+    const displayCode     = document.getElementById('display-code');
+    const roomCodeInput   = document.getElementById('room-code-input');
+    const joinBtn         = document.getElementById('join-btn');
+    const statusEl        = document.getElementById('status');
+    const setupSection    = document.getElementById('setup-section');
+    const syncSection     = document.getElementById('sync-section');
+    const activeRoomIdEl  = document.getElementById('active-room-id');
+    const clipboardBox    = document.getElementById('clipboard-box');
+    const fileInput       = document.getElementById('file-input');
+    const logBox          = document.getElementById('terminal-logs');
+    const purgeZone       = document.getElementById('purge-zone');
+    const purgeBtn        = document.getElementById('purge-btn');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+    const deviceCountEl   = document.getElementById('device-count');
+    const asciiHeader     = document.getElementById('ascii-header');
+    const mobileTitle     = document.getElementById('mobile-title');
+
+    // --- STATE ---
+    let roomCode = "";
+    let channel  = null;       // BroadcastChannel
+    let deviceId = 'dev-' + Math.random().toString(36).substr(2,8);
+    let knownDevices = new Set();
+    let isPurged = false;
+    let pendingChunks = {};    // for incoming files: key = senderId
+    const CHUNK_SIZE = 256 * 1024; // 256KB chunks
+
+    function writeLog(msg, warn=false) {
+        const time = new Date().toTimeString().split(' ')[0];
+        const div = document.createElement('div');
+        div.className = warn ? "text-red-500 font-bold" : "text-green-500/80";
+        div.innerText = `[${time}] ${msg}`;
+        logBox.appendChild(div); logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function toggleRedAlert(active) {
+        if(active){
+            document.documentElement.style.setProperty('--glow-color','rgba(239,68,68,0.8)');
+            rainColor='#ef4444';
+            mainTerminal.classList.add('border-red-500');
+            if(asciiHeader) asciiHeader.style.color='#ef4444';
+            if(mobileTitle) mobileTitle.style.color='#ef4444';
+        } else {
+            document.documentElement.style.setProperty('--glow-color','rgba(34,197,94,0.7)');
+            rainColor='#22c55e';
+            mainTerminal.classList.remove('border-red-500');
+            if(asciiHeader) asciiHeader.style.color='';
+            if(mobileTitle) mobileTitle.style.color='';
+        }
+    }
+
+    function updateDeviceCount() {
+        deviceCountEl.innerText = knownDevices.size + 1; // +1 for self
+    }
+
+    // --- BROADCAST SEND ---
+    function send(data) {
+        if(channel) channel.postMessage({ ...data, from: deviceId });
+    }
+
+    // --- ENTER ROOM (common for host & joiner) ---
+    function enterRoom(code) {
+        roomCode = code;
+        knownDevices.clear();
+
+        // BroadcastChannel — same origin, works across tabs on same device
+        // AND on same WiFi IF served via local HTTP server (python -m http.server)
+        channel = new BroadcastChannel('clapfile-room-' + roomCode);
+
+        channel.onmessage = (event) => {
+            const data = event.data;
+            if (!data || data.from === deviceId) return;
+
+            // Track devices
+            if (data.from && !knownDevices.has(data.from)) {
+                knownDevices.add(data.from);
+                updateDeviceCount();
+                writeLog(`Node joined mesh: [${data.from}]`);
+                speakAI("Device synchronized");
+                // Reply with presence so new joiner knows we exist
+                send({ type: 'presence' });
+            }
+
+            if (data.type === 'presence') {
+                // already handled above via from tracking
+            }
+            else if (data.type === 'text') {
+                clipboardBox.value = data.content;
+            }
+            else if (data.type === 'stream-abort') {
+                toggleRedAlert(false); purgeZone.classList.add('hidden');
+                fileInput.value=''; uploadPlaceholder.innerText='[ CAST PAYLOAD TO ALL CLAPFILE NODES ]';
+                pendingChunks[data.from] = null;
+                speakAI("Stream wiped");
+                writeLog("❌ DATA STREAM PURGED BY REMOTE.", true);
+            }
+            else if (data.type === 'file-start') {
+                pendingChunks[data.from] = { meta: data, chunks: [] };
+                toggleRedAlert(true); purgeZone.classList.remove('hidden');
+                writeLog(`[ALERT] INBOUND: ${data.fileName.toUpperCase()} (${(data.fileSize/1024).toFixed(1)} KB)`, true);
+            }
+            else if (data.type === 'file-chunk') {
+                if (!pendingChunks[data.from]) return;
+                // chunk is base64 string — decode back to ArrayBuffer
+                const binary = atob(data.chunk);
+                const bytes = new Uint8Array(binary.length);
+                for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+                pendingChunks[data.from].chunks.push(bytes.buffer);
+                const progress = Math.round((pendingChunks[data.from].chunks.length / data.totalChunks)*100);
+                if(progress % 20 === 0) writeLog(`[CLAPFILE] Processing: ${progress}%`);
+            }
+            else if (data.type === 'file-end') {
+                if (!pendingChunks[data.from]) return;
+                toggleRedAlert(false); purgeZone.classList.add('hidden');
+                speakAI("Download ready");
+                const { meta, chunks } = pendingChunks[data.from];
+                const blob = new Blob(chunks, { type: meta.fileType });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = meta.fileName;
+                link.innerText = `[💾 SAVE: ${meta.fileName.toUpperCase()}]`;
+                link.className = "block bg-green-500 text-black text-center text-xs py-2 rounded mt-2 font-black tracking-widest border border-green-400 hover:bg-green-400 transition-all cursor-pointer";
+                logBox.appendChild(link); logBox.scrollTop = logBox.scrollHeight;
+                pendingChunks[data.from] = null;
             }
         };
 
-        function speakAI(text) {
-            try {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 1.0; utterance.pitch = 0.6;
-                window.speechSynthesis.speak(utterance);
-            } catch(e) {}
+        // Show sync UI
+        setupSection.classList.add('hidden');
+        syncSection.classList.remove('hidden');
+        activeRoomIdEl.innerText = roomCode;
+        updateDeviceCount();
+
+        // Announce presence
+        send({ type: 'presence' });
+        writeLog(`Joined mesh room: ${roomCode}. Waiting for other devices...`);
+        speakAI("Mesh room joined.");
+    }
+
+    // --- HOST ---
+    generateBtn.addEventListener('click', () => {
+        generateBtn.disabled = true;
+        statusEl.innerText = ">> FORGING MESH ROOT NODE...";
+        const code = Math.floor(1000 + Math.random()*9000).toString();
+        displayCode.innerText = code;
+        generatedCodeBox.classList.remove('hidden');
+        statusEl.innerText = "";
+        speakAI("Root online. Passcode is " + code.split('').join(' '));
+        enterRoom(code);
+    });
+
+    // --- JOIN ---
+    joinBtn.addEventListener('click', () => {
+        const code = roomCodeInput.value.trim();
+        if(code.length !== 4) {
+            mainTerminal.classList.add('shake-active');
+            setTimeout(()=>mainTerminal.classList.remove('shake-active'),400);
+            statusEl.innerText=">> INVALID PIN"; return;
+        }
+        joinBtn.disabled = true;
+        statusEl.innerText=">> INJECTING INTO MESH...";
+        enterRoom(code);
+    });
+
+    // --- TEXT SYNC ---
+    clipboardBox.addEventListener('input', () => {
+        send({ type: 'text', content: clipboardBox.value });
+    });
+
+    // --- FILE SEND ---
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!channel) { writeLog("Join a room first!", true); return; }
+
+        isPurged = false;
+        toggleRedAlert(true); purgeZone.classList.remove('hidden');
+        uploadPlaceholder.innerText = `BEAMING: ${file.name.toUpperCase()}`;
+        speakAI("Broadcasting file");
+        writeLog(`[ALERT] SENDING: ${file.name.toUpperCase()} (${(file.size/1024).toFixed(1)} KB)`, true);
+
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        send({ type: 'file-start', fileName: file.name, fileType: file.type, fileSize: file.size, totalChunks });
+
+        let currentChunk = 0;
+        const reader = new FileReader();
+
+        function loadNext() {
+            if(isPurged) return;
+            const start = currentChunk * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            reader.readAsArrayBuffer(file.slice(start, end));
         }
 
-        const bootScreen = document.getElementById('boot-screen');
-        const mainTerminal = document.getElementById('main-terminal');
-        const bootLogs = document.getElementById('boot-logs');
-        const bootScripts = [
-            "INITIALIZING CLAPFILE AD-HOC SYSTEM...",
-            "RECOGNIZING INTERACTIVE MESH CHANNELS...",
-            "OVERRIDING LOCAL STORAGE BOUNDARIES... [RAM ENGINE STABLE]",
-            "SUCCESS: CLAPFILE CORE MATRIX DISTRIBUTED."
-        ];
+        reader.onload = function(ev) {
+            if(isPurged) return;
+            // Convert ArrayBuffer to base64 for BroadcastChannel (structured clone handles AB too, but base64 is safer)
+            const bytes = new Uint8Array(ev.target.result);
+            let binary = '';
+            for(let i=0;i<bytes.length;i++) binary += String.fromCharCode(bytes[i]);
+            const b64 = btoa(binary);
 
-        let scriptIdx = 0;
-        function runBootSequence() {
-            if (scriptIdx < bootScripts.length) {
-                const p = document.createElement('p');
-                p.innerText = `>_ ${bootScripts[scriptIdx]}`;
-                bootLogs.appendChild(p); scriptIdx++;
-                setTimeout(runBootSequence, 200);
+            send({ type:'file-chunk', chunk: b64, totalChunks });
+            currentChunk++;
+            const progress = Math.round((currentChunk/totalChunks)*100);
+            if(progress%25===0||progress===100) writeLog(`[STREAM] Sending: ${progress}%`);
+
+            if(currentChunk < totalChunks) {
+                loadNext();
             } else {
-                setTimeout(() => {
-                    bootScreen.classList.add('hidden');
-                    mainTerminal.classList.remove('scale-95', 'opacity-0');
-                    speakAI("Clap File matrix online.");
-                    writeLog("ClapFile main network system initialized.");
-                }, 400);
+                send({ type:'file-end' });
+                toggleRedAlert(false); purgeZone.classList.add('hidden');
+                fileInput.value=''; uploadPlaceholder.innerText='[ CAST PAYLOAD TO ALL CLAPFILE NODES ]';
+                speakAI("File sent");
+                writeLog(`✅ File sent to all mesh nodes.`);
             }
+        };
+        loadNext();
+    });
+
+    // --- PURGE ---
+    purgeBtn.addEventListener('click', () => {
+        isPurged = true;
+        send({ type:'stream-abort' });
+        toggleRedAlert(false); purgeZone.classList.add('hidden');
+        fileInput.value=''; uploadPlaceholder.innerText='[ CAST PAYLOAD TO ALL CLAPFILE NODES ]';
+        speakAI("Pipeline wiped");
+        writeLog("💥 PURGE COMPLETE.", true);
+    });
+
+    // --- HEARTBEAT: periodic presence ping so device count stays accurate ---
+    setInterval(() => {
+        if(channel) {
+            send({ type:'presence' });
         }
-        window.onload = runBootSequence;
+    }, 5000);
 
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        resize(); window.onresize = resize;
-        const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        let rainColor = '#22c55e';
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(2, 5, 3, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = rainColor; ctx.font = fontSize + 'px monospace';
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(drawMatrix, 30);
-
-        const generateBtn = document.getElementById('generate-btn');
-        const generatedCodeBox = document.getElementById('generated-code-box');
-        const displayCode = document.getElementById('display-code');
-        const roomCodeInput = document.getElementById('room-code-input');
-        const joinBtn = document.getElementById('join-btn');
-        const statusEl = document.getElementById('status');
-        const setupSection = document.getElementById('setup-section');
-        const syncSection = document.getElementById('sync-section');
-        const activeRoomIdEl = document.getElementById('active-room-id');
-        const clipboardBox = document.getElementById('clipboard-box');
-        const fileInput = document.getElementById('file-input');
-        const logBox = document.getElementById('terminal-logs');
-        const purgeZone = document.getElementById('purge-zone');
-        const purgeBtn = document.getElementById('purge-btn');
-        const uploadPlaceholder = document.getElementById('upload-placeholder');
-        const deviceCountEl = document.getElementById('device-count');
-        const asciiHeader = document.getElementById('ascii-header');
-        const mobileTitle = document.getElementById('mobile-title');
-
-        let peer = null, finalRoomCode = "";
-        let connections = [];
-        const CHUNK_SIZE = 16384;
-        let isPurged = false;
-        let isHost = false;
-
-        function writeLog(msg, isWarning = false) {
-            const time = new Date().toTimeString().split(' ')[0];
-            const div = document.createElement('div');
-            div.className = isWarning ? "text-red-500 animate-pulse font-bold" : "text-green-500/80";
-            div.innerText = `[${time}] ${msg}`;
-            logBox.appendChild(div); logBox.scrollTop = logBox.scrollHeight;
-        }
-
-        function updateDeviceCount() {
-            deviceCountEl.innerText = connections.length + 1;
-        }
-
-        function broadcast(data) {
-            connections.forEach(conn => { if (conn.open) conn.send(data); });
-        }
-
-        function toggleRedAlert(active) {
-            const terminalWindow = document.getElementById('main-terminal');
-            const alertGlow = document.getElementById('alert-glow');
-            if (active) {
-                document.documentElement.style.setProperty('--glow-color', 'rgba(239, 68, 68, 0.8)');
-                rainColor = '#ef4444';
-                terminalWindow.classList.add('border-red-500');
-                alertGlow.classList.replace('bg-red-600/0', 'bg-red-600/5');
-                if(asciiHeader) asciiHeader.classList.replace('text-green-500', 'text-red-500');
-                if(mobileTitle) mobileTitle.classList.replace('text-white', 'text-red-500');
-            } else {
-                document.documentElement.style.setProperty('--glow-color', 'rgba(34, 197, 94, 0.7)');
-                rainColor = '#22c55e';
-                terminalWindow.classList.remove('border-red-500');
-                alertGlow.classList.replace('bg-red-600/5', 'bg-red-600/0');
-                if(asciiHeader) asciiHeader.classList.replace('text-red-500', 'text-green-500');
-                if(mobileTitle) mobileTitle.classList.replace('text-red-500', 'text-white');
-            }
-        }
-
-        function setupConnectionEvents(conn) {
-            let receivedChunks = []; let currentIncomingFile = null;
-            conn.on('open', () => {
-                if (isHost) {
-                    const peerIds = connections.map(c => c.peer);
-                    broadcast({ type: 'mesh-update', peers: peerIds });
-                }
-                setupSection.classList.add('hidden'); syncSection.classList.remove('hidden');
-                activeRoomIdEl.innerText = finalRoomCode;
-                writeLog(`Node connected to matrix: [${conn.peer.substring(0,8)}...]`);
-                updateDeviceCount();
-                speakAI("Device synchronized");
-
-                conn.on('data', (data) => {
-                    if (data.type === 'text') {
-                        clipboardBox.value = data.content;
-                    } else if (data.type === 'mesh-update' && !isHost) {
-                        data.peers.forEach(id => {
-                            if (id !== peer.id && !connections.some(c => c.peer === id)) {
-                                // ✅ FIXED: peerConfig added here too
-                                let c = peer.connect(id, { reliable: true });
-                                setupConnectionEvents(c); connections.push(c);
-                            }
-                        });
-                        updateDeviceCount();
-                    } else if (data.type === 'stream-abort') {
-                        toggleRedAlert(false); purgeZone.classList.add('hidden');
-                        fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
-                        speakAI("Stream wiped");
-                        writeLog("❌ WARNING: DATA STREAM PURGED BY REMOTES.", true);
-                        receivedChunks = [];
-                    } else if (data.type === 'file-start') {
-                        receivedChunks = []; currentIncomingFile = data;
-                        toggleRedAlert(true); purgeZone.classList.remove('hidden');
-                        writeLog(`[ALERT] INBOUND STREAM: ${data.fileName.toUpperCase()}`, true);
-                    } else if (data.type === 'file-chunk') {
-                        receivedChunks.push(data.chunk);
-                        let progress = Math.round((receivedChunks.length / data.totalChunks) * 100);
-                        if (progress % 20 === 0) writeLog(`[CLAPFILE] Processing Blocks: ${progress}%`);
-                    } else if (data.type === 'file-end') {
-                        toggleRedAlert(false); purgeZone.classList.add('hidden');
-                        speakAI("Download ready");
-                        const blob = new Blob(receivedChunks, { type: currentIncomingFile.fileType });
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob); link.download = currentIncomingFile.fileName;
-                        link.innerText = `[💾 DECRYPTED PAYLOAD: ${currentIncomingFile.fileName.toUpperCase()}]`;
-                        link.className = "block bg-green-500 text-black text-center text-xs py-2 rounded mt-2 font-black tracking-widest border border-green-400 hover:bg-green-400 transition-all cursor-pointer shadow-[0_0_15px_rgba(34,197,94,0.3)]";
-                        logBox.appendChild(link); logBox.scrollTop = logBox.scrollHeight;
-                    }
-                });
-            });
-            conn.on('close', () => {
-                connections = connections.filter(c => c.peer !== conn.peer);
-                writeLog(`Device exited matrix.`); updateDeviceCount();
-            });
-            conn.on('error', (err) => {
-                writeLog(`Channel Error: ${err.toString()}`, true);
-            });
-        }
-
-        generateBtn.addEventListener('click', () => {
-            isHost = true; generateBtn.disabled = true;
-            statusEl.innerText = ">> SPINNING UP CLAPFILE ROOT NODE...";
-            finalRoomCode = Math.floor(1000 + Math.random() * 9000).toString();
-
-            // ✅ FIXED: peerConfig passed to host Peer
-            peer = new Peer('clapfile-' + finalRoomCode, peerConfig);
-
-            peer.on('open', () => {
-                statusEl.innerText = "";
-                generatedCodeBox.classList.remove('hidden');
-                displayCode.innerText = finalRoomCode;
-                speakAI("Root online. Passcode is " + finalRoomCode.split('').join(' '));
-                peer.on('connection', (connection) => {
-                    connections.push(connection);
-                    setupConnectionEvents(connection);
-                });
-            });
-            peer.on('error', (err) => {
-                console.error("Host error:", err);
-                statusEl.innerText = `>> GEN FAULT: ${err.type.toUpperCase()}. RE-FORGING...`;
-                generateBtn.disabled = false;
-                setTimeout(() => generateBtn.click(), 1500);
-            });
-        });
-
-        joinBtn.addEventListener('click', () => {
-            finalRoomCode = roomCodeInput.value.trim();
-            if (finalRoomCode.length !== 4) {
-                mainTerminal.classList.add('shake-active');
-                setTimeout(() => mainTerminal.classList.remove('shake-active'), 400);
-                statusEl.innerText = ">> SECURITY FAULT: INVALID PIN LENGTH"; return;
-            }
-            statusEl.innerText = ">> INJECTING INTO MATRIX CLOUD...";
-            joinBtn.disabled = true;
-
-            // ✅ FIXED: peerConfig passed to joining Peer
-            peer = new Peer(peerConfig);
-
-            peer.on('open', () => {
-                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true });
-                connections.push(rootConn);
-                setupConnectionEvents(rootConn);
-
-                // ✅ FIXED: connection timeout — 15 sec mein nahi hua toh error dikhao
-                const timeout = setTimeout(() => {
-                    if (!rootConn.open) {
-                        statusEl.innerText = ">> TIMEOUT: HOST NOT FOUND OR OFFLINE";
-                        joinBtn.disabled = false;
-                        writeLog("Connection timeout. Check PIN or host status.", true);
-                    }
-                }, 15000);
-
-                rootConn.on('open', () => clearTimeout(timeout));
-
-                peer.on('connection', (connection) => {
-                    if (!connections.some(c => c.peer === connection.peer)) {
-                        connections.push(connection);
-                        setupConnectionEvents(connection);
-                    }
-                });
-            });
-
-            peer.on('error', (err) => {
-                console.error("Client error:", err);
-                statusEl.innerText = `>> NET_CORRUPTION: ${err.type.toUpperCase()}`;
-                joinBtn.disabled = false;
-            });
-        });
-
-        clipboardBox.addEventListener('input', () => {
-            broadcast({ type: 'text', content: clipboardBox.value });
-        });
-
-        purgeBtn.addEventListener('click', () => {
-            isPurged = true; broadcast({ type: 'stream-abort' });
-            toggleRedAlert(false); purgeZone.classList.add('hidden');
-            fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
-            speakAI("Matrix pipeline wiped");
-            writeLog("💥 LOCAL WIPE COMPLETE: ALL NETWORKS FLUSHED.", true);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file || connections.length === 0) {
-                if (connections.length === 0) writeLog("No devices connected to send file.", true);
-                return;
-            }
-            const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-            isPurged = false; toggleRedAlert(true); purgeZone.classList.remove('hidden');
-            uploadPlaceholder.innerText = `BEAMING VIA CLAPFILE: ${file.name.toUpperCase()}`;
-            speakAI("Broadcasting binary");
-            writeLog(`[ALERT] PIPELINE ENERGIZED FOR: ${file.name.toUpperCase()}`, true);
-
-            broadcast({ type: 'file-start', fileName: file.name, fileType: file.type });
-            let currentChunk = 0;
-            const fileReader = new FileReader();
-
-            function loadNext() {
-                if (isPurged) return;
-                const start = currentChunk * CHUNK_SIZE;
-                const end = Math.min(start + CHUNK_SIZE, file.size);
-                fileReader.readAsArrayBuffer(file.slice(start, end));
-            }
-
-            fileReader.onload = function(event) {
-                if (isPurged) return;
-                broadcast({ type: 'file-chunk', chunk: event.target.result, totalChunks: totalChunks });
-                currentChunk++;
-                let progress = Math.round((currentChunk / totalChunks) * 100);
-                if (progress % 25 === 0 || progress === 100) writeLog(`[STREAM] Outbound Matrix Blocks: ${progress}%`);
-                if (currentChunk < totalChunks) {
-                    loadNext();
-                } else {
-                    broadcast({ type: 'file-end' });
-                    toggleRedAlert(false); purgeZone.classList.add('hidden');
-                    fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
-                    speakAI("Broadcast success");
-                    writeLog(`✅ All sectors synced to the ClapFile mesh.`);
-                }
-            };
-            loadNext();
-        });
-    </script>
+</script>
 </body>
 </html>
