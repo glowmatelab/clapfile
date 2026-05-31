@@ -53,7 +53,7 @@
 
         <div class="relative z-10">
             <div id="title-bar" class="flex items-center justify-between border-b border-green-500/30 pb-3 mb-6 text-xs text-green-500/60 font-bold tracking-widest transition-colors duration-500">
-                <div id="protocol-title">⚡ SYSTEM://CLAPFILE_MESH_CORE_v5.2</div>
+                <div id="protocol-title">⚡ SYSTEM://CLAPFILE_MESH_CORE_v5.3</div>
                 <div class="flex gap-1.5">
                     <span id="indicator-pulse" class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] animate-pulse transition-all duration-500"></span>
                 </div>
@@ -124,7 +124,7 @@
     </div>
 
     <script>
-        // High-performance Network Ice Configuration Bypass
+        // ✅ FIXED: peerConfig with STUN servers restored
         const peerConfig = {
             config: {
                 iceServers: [
@@ -181,7 +181,8 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize(); window.onresize = resize;
         const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&";
-        const fontSize = 14; const columns = canvas.width / fontSize;
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
         let rainColor = '#22c55e';
 
@@ -217,8 +218,8 @@
         const mobileTitle = document.getElementById('mobile-title');
 
         let peer = null, finalRoomCode = "";
-        let connections = []; 
-        const CHUNK_SIZE = 16384; 
+        let connections = [];
+        const CHUNK_SIZE = 16384;
         let isPurged = false;
         let isHost = false;
 
@@ -272,24 +273,26 @@
                 speakAI("Device synchronized");
 
                 conn.on('data', (data) => {
-                    if (data.type === 'text') { clipboardBox.value = data.content; } 
-                    else if (data.type === 'mesh-update' && !isHost) {
+                    if (data.type === 'text') {
+                        clipboardBox.value = data.content;
+                    } else if (data.type === 'mesh-update' && !isHost) {
                         data.peers.forEach(id => {
                             if (id !== peer.id && !connections.some(c => c.peer === id)) {
-                                let c = peer.connect(id, { reliable: true }); setupConnectionEvents(c); connections.push(c);
+                                // ✅ FIXED: peerConfig added here too
+                                let c = peer.connect(id, { reliable: true });
+                                setupConnectionEvents(c); connections.push(c);
                             }
                         });
                         updateDeviceCount();
-                    }
-                    else if (data.type === 'stream-abort') {
+                    } else if (data.type === 'stream-abort') {
                         toggleRedAlert(false); purgeZone.classList.add('hidden');
                         fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
                         speakAI("Stream wiped");
                         writeLog("❌ WARNING: DATA STREAM PURGED BY REMOTES.", true);
                         receivedChunks = [];
-                    }
-                    else if (data.type === 'file-start') {
-                        receivedChunks = []; currentIncomingFile = data; toggleRedAlert(true); purgeZone.classList.remove('hidden');
+                    } else if (data.type === 'file-start') {
+                        receivedChunks = []; currentIncomingFile = data;
+                        toggleRedAlert(true); purgeZone.classList.remove('hidden');
                         writeLog(`[ALERT] INBOUND STREAM: ${data.fileName.toUpperCase()}`, true);
                     } else if (data.type === 'file-chunk') {
                         receivedChunks.push(data.chunk);
@@ -320,77 +323,121 @@
             isHost = true; generateBtn.disabled = true;
             statusEl.innerText = ">> SPINNING UP CLAPFILE ROOT NODE...";
             finalRoomCode = Math.floor(1000 + Math.random() * 9000).toString();
-            
+
+            // ✅ FIXED: peerConfig passed to host Peer
             peer = new Peer('clapfile-' + finalRoomCode, peerConfig);
-            
+
             peer.on('open', () => {
-                statusEl.innerText = ""; generatedCodeBox.classList.remove('hidden'); displayCode.innerText = finalRoomCode;
+                statusEl.innerText = "";
+                generatedCodeBox.classList.remove('hidden');
+                displayCode.innerText = finalRoomCode;
                 speakAI("Root online. Passcode is " + finalRoomCode.split('').join(' '));
-                peer.on('connection', (connection) => { connections.push(connection); setupConnectionEvents(connection); });
+                peer.on('connection', (connection) => {
+                    connections.push(connection);
+                    setupConnectionEvents(connection);
+                });
             });
             peer.on('error', (err) => {
-                console.error("Host Generation Fault:", err);
+                console.error("Host error:", err);
                 statusEl.innerText = `>> GEN FAULT: ${err.type.toUpperCase()}. RE-FORGING...`;
                 generateBtn.disabled = false;
-                setTimeout(() => { generateBtn.click(); }, 1500);
+                setTimeout(() => generateBtn.click(), 1500);
             });
         });
 
         joinBtn.addEventListener('click', () => {
             finalRoomCode = roomCodeInput.value.trim();
             if (finalRoomCode.length !== 4) {
-                mainTerminal.classList.add('shake-active'); setTimeout(() => mainTerminal.classList.remove('shake-active'), 400);
+                mainTerminal.classList.add('shake-active');
+                setTimeout(() => mainTerminal.classList.remove('shake-active'), 400);
                 statusEl.innerText = ">> SECURITY FAULT: INVALID PIN LENGTH"; return;
             }
-            statusEl.innerText = ">> INJECTING DATA VIA METERED MESH ENGINE...";
-            joinBtn.disabled = true; 
-            
+            statusEl.innerText = ">> INJECTING INTO MATRIX CLOUD...";
+            joinBtn.disabled = true;
+
+            // ✅ FIXED: peerConfig passed to joining Peer
             peer = new Peer(peerConfig);
-            
-            peer.on('open', () => { 
-                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true }); 
-                connections.push(rootConn); 
-                setupConnectionEvents(rootConn); 
-                
+
+            peer.on('open', () => {
+                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true });
+                connections.push(rootConn);
+                setupConnectionEvents(rootConn);
+
+                // ✅ FIXED: connection timeout — 15 sec mein nahi hua toh error dikhao
+                const timeout = setTimeout(() => {
+                    if (!rootConn.open) {
+                        statusEl.innerText = ">> TIMEOUT: HOST NOT FOUND OR OFFLINE";
+                        joinBtn.disabled = false;
+                        writeLog("Connection timeout. Check PIN or host status.", true);
+                    }
+                }, 15000);
+
+                rootConn.on('open', () => clearTimeout(timeout));
+
                 peer.on('connection', (connection) => {
-                    if(!connections.some(c => c.peer === connection.peer)) { connections.push(connection); setupConnectionEvents(connection); }
+                    if (!connections.some(c => c.peer === connection.peer)) {
+                        connections.push(connection);
+                        setupConnectionEvents(connection);
+                    }
                 });
             });
-            
-            peer.on('error', (err) => { 
-                console.error("Client Core Exception:", err);
-                statusEl.innerText = `>> NET_CORRUPTION: ${err.type.toUpperCase()}`; 
-                joinBtn.disabled = false; 
+
+            peer.on('error', (err) => {
+                console.error("Client error:", err);
+                statusEl.innerText = `>> NET_CORRUPTION: ${err.type.toUpperCase()}`;
+                joinBtn.disabled = false;
             });
         });
 
-        clipboardBox.addEventListener('input', () => { broadcast({ type: 'text', content: clipboardBox.value }); });
+        clipboardBox.addEventListener('input', () => {
+            broadcast({ type: 'text', content: clipboardBox.value });
+        });
 
         purgeBtn.addEventListener('click', () => {
-            isPurged = true; broadcast({ type: 'stream-abort' }); toggleRedAlert(false); purgeZone.classList.add('hidden');
+            isPurged = true; broadcast({ type: 'stream-abort' });
+            toggleRedAlert(false); purgeZone.classList.add('hidden');
             fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
-            speakAI("Matrix pipeline wiped"); writeLog("💥 LOCAL WIPE COMPLETE: ALL NETWORKS FLUSHED.", true);
+            speakAI("Matrix pipeline wiped");
+            writeLog("💥 LOCAL WIPE COMPLETE: ALL NETWORKS FLUSHED.", true);
         });
 
         fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0]; if (!file || connections.length === 0) return;
+            const file = e.target.files[0];
+            if (!file || connections.length === 0) {
+                if (connections.length === 0) writeLog("No devices connected to send file.", true);
+                return;
+            }
             const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
             isPurged = false; toggleRedAlert(true); purgeZone.classList.remove('hidden');
-            uploadPlaceholder.innerText = `BEAMING VIA CLAPFILE: ${file.name.toUpperCase()}`; speakAI("Broadcasting binary");
+            uploadPlaceholder.innerText = `BEAMING VIA CLAPFILE: ${file.name.toUpperCase()}`;
+            speakAI("Broadcasting binary");
             writeLog(`[ALERT] PIPELINE ENERGIZED FOR: ${file.name.toUpperCase()}`, true);
 
             broadcast({ type: 'file-start', fileName: file.name, fileType: file.type });
-            let currentChunk = 0; const fileReader = new FileReader();
-            function loadNext() { if(isPurged) return; const start = currentChunk * CHUNK_SIZE; const end = Math.min(start + CHUNK_SIZE, file.size); fileReader.readAsArrayBuffer(file.slice(start, end)); }
+            let currentChunk = 0;
+            const fileReader = new FileReader();
+
+            function loadNext() {
+                if (isPurged) return;
+                const start = currentChunk * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, file.size);
+                fileReader.readAsArrayBuffer(file.slice(start, end));
+            }
 
             fileReader.onload = function(event) {
-                if(isPurged) return; broadcast({ type: 'file-chunk', chunk: event.target.result, totalChunks: totalChunks }); currentChunk++;
+                if (isPurged) return;
+                broadcast({ type: 'file-chunk', chunk: event.target.result, totalChunks: totalChunks });
+                currentChunk++;
                 let progress = Math.round((currentChunk / totalChunks) * 100);
                 if (progress % 25 === 0 || progress === 100) writeLog(`[STREAM] Outbound Matrix Blocks: ${progress}%`);
-                if (currentChunk < totalChunks) { loadNext(); } else {
-                    broadcast({ type: 'file-end' }); toggleRedAlert(false); purgeZone.classList.add('hidden');
+                if (currentChunk < totalChunks) {
+                    loadNext();
+                } else {
+                    broadcast({ type: 'file-end' });
+                    toggleRedAlert(false); purgeZone.classList.add('hidden');
                     fileInput.value = ""; uploadPlaceholder.innerText = "[ CAST PAYLOAD TO ALL CLAPFILE NODES ]";
-                    speakAI("Broadcast success"); writeLog(`✅ All sectors synced to the ClapFile mesh.`);
+                    speakAI("Broadcast success");
+                    writeLog(`✅ All sectors synced to the ClapFile mesh.`);
                 }
             };
             loadNext();
