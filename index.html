@@ -124,6 +124,19 @@
     </div>
 
     <script>
+        // Global PeerJS ICE Configuration Object with Free Google STUN Servers
+        const peerConfig = {
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' },
+                    { urls: 'stun:stun3.l.google.com:19302' },
+                    { urls: 'stun:stun4.l.google.com:19302' }
+                ]
+            }
+        };
+
         function speakAI(text) {
             try {
                 window.speechSynthesis.cancel();
@@ -261,7 +274,8 @@
                     else if (data.type === 'mesh-update' && !isHost) {
                         data.peers.forEach(id => {
                             if (id !== peer.id && !connections.some(c => c.peer === id)) {
-                                let c = peer.connect(id); setupConnectionEvents(c); connections.push(c);
+                                // Added reliable connection option for fallback mesh nodes
+                                let c = peer.connect(id, { reliable: true }); setupConnectionEvents(c); connections.push(c);
                             }
                         });
                         updateDeviceCount();
@@ -276,6 +290,7 @@
                     else if (data.type === 'file-start') {
                         receivedChunks = []; currentIncomingFile = data; toggleRedAlert(true); purgeZone.classList.remove('hidden');
                         writeLog(`[ALERT] INBOUND STREAM: ${data.fileName.toUpperCase()}`, true);
+                        receivedChunks = [];
                     } else if (data.type === 'file-chunk') {
                         receivedChunks.push(data.chunk);
                         let progress = Math.round((receivedChunks.length / data.totalChunks) * 100);
@@ -302,7 +317,10 @@
             isHost = true; generateBtn.disabled = true;
             statusEl.innerText = ">> SPINNING UP CLAPFILE ROOT NODE...";
             finalRoomCode = Math.floor(1000 + Math.random() * 9000).toString();
-            peer = new Peer('clapfile-' + finalRoomCode);
+            
+            // Initializing Host with custom ICE STUN servers
+            peer = new Peer('clapfile-' + finalRoomCode, peerConfig);
+            
             peer.on('open', () => {
                 statusEl.innerText = ""; generatedCodeBox.classList.remove('hidden'); displayCode.innerText = finalRoomCode;
                 speakAI("Root online. Passcode is " + finalRoomCode.split('').join(' '));
@@ -318,9 +336,14 @@
                 statusEl.innerText = ">> SECURITY FAULT: INVALID PIN LENGTH"; return;
             }
             statusEl.innerText = ">> CONNECTING TO MATRIX CLOUD...";
-            joinBtn.disabled = true; peer = new Peer();
+            joinBtn.disabled = true; 
+            
+            // Initializing Peer with custom ICE STUN servers
+            peer = new Peer(peerConfig);
+            
             peer.on('open', () => { 
-                let rootConn = peer.connect('clapfile-' + finalRoomCode); connections.push(rootConn); setupConnectionEvents(rootConn); 
+                // Connecting with reliable data stream parameter enabled
+                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true }); connections.push(rootConn); setupConnectionEvents(rootConn); 
                 peer.on('connection', (connection) => {
                     if(!connections.some(c => c.peer === connection.peer)) { connections.push(connection); setupConnectionEvents(connection); }
                 });
