@@ -124,7 +124,7 @@
     </div>
 
     <script>
-        // Global PeerJS ICE Configuration Object with Free Google STUN Servers
+        // High-performance Network Ice Configuration Bypass
         const peerConfig = {
             config: {
                 iceServers: [
@@ -132,8 +132,10 @@
                     { urls: 'stun:stun1.l.google.com:19302' },
                     { urls: 'stun:stun2.l.google.com:19302' },
                     { urls: 'stun:stun3.l.google.com:19302' },
-                    { urls: 'stun:stun4.l.google.com:19302' }
-                ]
+                    { urls: 'stun:stun4.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478' }
+                ],
+                sdpSemantics: 'unified-plan'
             }
         };
 
@@ -274,7 +276,6 @@
                     else if (data.type === 'mesh-update' && !isHost) {
                         data.peers.forEach(id => {
                             if (id !== peer.id && !connections.some(c => c.peer === id)) {
-                                // Added reliable connection option for fallback mesh nodes
                                 let c = peer.connect(id, { reliable: true }); setupConnectionEvents(c); connections.push(c);
                             }
                         });
@@ -290,7 +291,6 @@
                     else if (data.type === 'file-start') {
                         receivedChunks = []; currentIncomingFile = data; toggleRedAlert(true); purgeZone.classList.remove('hidden');
                         writeLog(`[ALERT] INBOUND STREAM: ${data.fileName.toUpperCase()}`, true);
-                        receivedChunks = [];
                     } else if (data.type === 'file-chunk') {
                         receivedChunks.push(data.chunk);
                         let progress = Math.round((receivedChunks.length / data.totalChunks) * 100);
@@ -311,6 +311,9 @@
                 connections = connections.filter(c => c.peer !== conn.peer);
                 writeLog(`Device exited matrix.`); updateDeviceCount();
             });
+            conn.on('error', (err) => {
+                writeLog(`Channel Error: ${err.toString()}`, true);
+            });
         }
 
         generateBtn.addEventListener('click', () => {
@@ -318,7 +321,6 @@
             statusEl.innerText = ">> SPINNING UP CLAPFILE ROOT NODE...";
             finalRoomCode = Math.floor(1000 + Math.random() * 9000).toString();
             
-            // Initializing Host with custom ICE STUN servers
             peer = new Peer('clapfile-' + finalRoomCode, peerConfig);
             
             peer.on('open', () => {
@@ -326,7 +328,12 @@
                 speakAI("Root online. Passcode is " + finalRoomCode.split('').join(' '));
                 peer.on('connection', (connection) => { connections.push(connection); setupConnectionEvents(connection); });
             });
-            peer.on('error', () => generateBtn.click());
+            peer.on('error', (err) => {
+                console.error("Host Generation Fault:", err);
+                statusEl.innerText = `>> GEN FAULT: ${err.type.toUpperCase()}. RE-FORGING...`;
+                generateBtn.disabled = false;
+                setTimeout(() => { generateBtn.click(); }, 1500);
+            });
         });
 
         joinBtn.addEventListener('click', () => {
@@ -335,20 +342,26 @@
                 mainTerminal.classList.add('shake-active'); setTimeout(() => mainTerminal.classList.remove('shake-active'), 400);
                 statusEl.innerText = ">> SECURITY FAULT: INVALID PIN LENGTH"; return;
             }
-            statusEl.innerText = ">> CONNECTING TO MATRIX CLOUD...";
+            statusEl.innerText = ">> INJECTING DATA VIA METERED MESH ENGINE...";
             joinBtn.disabled = true; 
             
-            // Initializing Peer with custom ICE STUN servers
             peer = new Peer(peerConfig);
             
             peer.on('open', () => { 
-                // Connecting with reliable data stream parameter enabled
-                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true }); connections.push(rootConn); setupConnectionEvents(rootConn); 
+                let rootConn = peer.connect('clapfile-' + finalRoomCode, { reliable: true }); 
+                connections.push(rootConn); 
+                setupConnectionEvents(rootConn); 
+                
                 peer.on('connection', (connection) => {
                     if(!connections.some(c => c.peer === connection.peer)) { connections.push(connection); setupConnectionEvents(connection); }
                 });
             });
-            peer.on('error', () => { statusEl.innerText = ">> CORRUPTION: ATTEMPT REJECTED."; joinBtn.disabled = false; });
+            
+            peer.on('error', (err) => { 
+                console.error("Client Core Exception:", err);
+                statusEl.innerText = `>> NET_CORRUPTION: ${err.type.toUpperCase()}`; 
+                joinBtn.disabled = false; 
+            });
         });
 
         clipboardBox.addEventListener('input', () => { broadcast({ type: 'text', content: clipboardBox.value }); });
